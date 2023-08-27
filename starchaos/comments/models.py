@@ -15,5 +15,3 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"Comment(content='{self.content}', date_posted='{self.date_posted}')"
-
-

@@ -10,5 +10,3 @@ class Like(db.Model):
 
     def __repr__(self):
         return f"Like(user_id={self.user_id}, post_id={self.post_id})"
-
-

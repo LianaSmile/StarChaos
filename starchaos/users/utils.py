@@ -1,13 +1,17 @@
 import secrets
 import os
 from random import sample
-
 from PIL import Image
 from flask import url_for, current_app
 from starchaos import mail, db
 from flask_mail import Message
-
 from starchaos.users.models import User
+
+MESSAGE_TEXT = '''To reset your password, visit the following link:
+{}
+
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
 
 
 def get_random_users_not_friends(user, num_users=10):
@@ -36,15 +40,10 @@ def save_image(form_picture, size, folder_name):
 
 
 def send_reset_email(user):
-    text = '''To reset your password, visit the following link:
-    {}
-
-    If you did not make this request then simply ignore this email and no changes will be made.
-    '''
     token = user.get_reset_token()
     msg = Message('Password Reset Request',
-                  sender='kalpakchyanliana@gmail.com',
+                  sender=current_app.config['MAIL_SENDER'],
                   recipients=[user.email])
     url = url_for('users.reset_token', token=token, _external=True)
-    msg.body = text.format(url)
+    msg.body = MESSAGE_TEXT.format(url)
     mail.send(msg)

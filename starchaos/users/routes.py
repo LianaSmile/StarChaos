@@ -78,7 +78,6 @@ def profile(full_name):
     user = User.query.filter_by(full_name=full_name).first_or_404()
     friends = user.friends.all()
     random_users = get_random_users_not_friends(user, num_users=10)
-    print(random_users)
     posts = Post.query.filter_by(author=user) \
         .order_by(Post.date_posted.desc()) \
         .paginate(page=page, per_page=5)
