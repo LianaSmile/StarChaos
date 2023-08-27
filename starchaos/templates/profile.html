@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% from 'macro/_renderfield.html' import renderfield %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body profile-page p-0">
+                    <div class="profile-header">
+                        <div class="position-relative">
+                            <img src="{{ url_for('static', filename='images/profile_images/' + user.bg_image) }}"
+                                 alt="profile-bg"
+                                 class="rounded img-fluid bg-image">
+                        </div>
+                        <div class="user-detail text-center mb-3">
+                            <div class="profile-img">
+                                <img src="{{ url_for('static', filename='images/profile_images/' + user.profile_image) }}"
+                                     alt="profile-img"
+                                     class="avatar-130 img-fluid"/>
+                            </div>
+                            <div class="profile-detail">
+                                <h3 class="">{{ user.full_name }}</h3>
+                            </div>
+                        </div>
+                        <div class="profile-info p-3 d-flex align-items-center justify-content-end position-relative">
+                            <div class="social-info">
+                                <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
+                                    <li class="text-center ps-3">
+                                        <h6>Posts</h6>
+                                        <p class="mb-0">{{ user.posts|length }}</p>
+                                    </li>
+                                    <li class="text-center ps-3">
+                                        <h6>Friends</h6>
+                                        <p class="mb-0">{{ user.friends.all()|length }}</p>
+                                    </li>
+                                    {% if current_user != user %}
+                                    <li class="text-center ps-3">
+                                        {% if current_user.is_friend(user) %}
+                                        <form action="{{ url_for('users.remove_friend', user_id=user.id) }}"
+                                              method="POST">
+                                            <button type="submit" class="btn btn-danger">Unfriend</button>
+                                        </form>
+                                        {% else %}
+                                        <form action="{{ url_for('users.add_friend', user_id=user.id) }}" method="post">
+                                            <button type="submit" class="btn btn-primary">Add Friend</button>
+                                        </form>
+                                        {% endif %}
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="user-tabing">
+                        <ul class="nav nav-pills d-flex align-items-center justify-content-around profile-feed-items p-0 m-0">
+                            <li class="nav-item col-12 col-sm-3 p-0">
+                                <a class="nav-link active" href="#pills-timeline-tab" data-bs-toggle="pill"
+                                   data-bs-target="#timeline" role="button">Timeline</a>
+                            </li>
+                            <li class="nav-item col-12 col-sm-3 p-0">
+                                <a class="nav-link" href="#pills-friends-tab" data-bs-toggle="pill"
+                                   data-bs-target="#friends" role="button">Friends</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="timeline" role="tabpanel">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-sm-12 mx-auto">
+                                {% if user.full_name == current_user.full_name %}
+                                <div id="post-modal-data" class="card card-block card-stretch card-height">
+                                    <div class="card-header d-flex justify-content-between">
+                                        <div class="header-title">
+                                            <h4 class="card-title">Create Post</h4>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <form class="post-text ms-3 w-100" method="POST" enctype="multipart/form-data">
+                                            {{ post_form.hidden_tag() }}
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-img">
+                                                    <img src="{{ url_for('static', filename='images/profile_images/' + user.profile_image) }}"
+                                                         alt="userimg"
+                                                         class="avatar-60 rounded-circle">
+                                                </div>
+                                                <div class="col-sm-10">
+                                                    {{
+                                                    renderfield(post_form.content,
+                                                    class="form-control form-control-lg rounded",
+                                                    style="border:none; resize: none")
+                                                    }}
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <ul class=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap">
+                                                <li class="me-3 mb-md-0 mb-2">
+                                                    <span id="upload" class="btn btn-soft-primary upload-button-pic">
+                                                        <img src="{{ url_for('static', filename='images/small/07.png') }}"
+                                                             alt="icon" class="img-fluid me-2 profile-pic-pic"
+                                                             width="24" height="24">
+                                                        Photo/Video
+                                                    </span>
+                                                    {{ post_form.picture(class="file-upload file-upload-pic") }}
+                                                    {% if post_form.picture.errors %}
+                                                    {% for error in post_form.picture.errors %}
+                                                    <span class="text-danger">{{ error }}</span><br>
+                                                    {% endfor %}
+                                                    {% endif %}
+                                                </li>
+                                                <li>
+                                                    {{ post_form.submit(class="btn btn-primary d-block w-100") }}
+                                                </li>
+                                            </ul>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-12 row m-0 p-0">
+                                <div class="col-sm-12 mx-auto">
+                                    <div class="card card-block card-stretch card-height">
+                                        {% for post in posts.items %}
+                                        <div class="card-body">
+                                            <div class="user-post-data">
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="me-3">
+                                                        <img class="rounded-circle img-fluid"
+                                                             src="{{ url_for('static', filename='images/profile_images/' + post.author.profile_image) }}"
+                                                             alt=""
+                                                             style="max-width: unset; height: 50px; width: 50px;">
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="">
+                                                                <a href="{{ url_for('users.profile', full_name=post.author.full_name) }}">
+                                                                    <h5 class="mb-0 d-inline-block">{{
+                                                                        post.author.full_name }}</h5>
+                                                                    <p class="mb-0 text-gray">
+                                                                        {{post.date_posted.strftime('%Y-%m-%d')}}
+                                                                    </p>
+                                                                </a>
+                                                            </div>
+                                                            <div class="card-post-toolbar">
+                                                                <div class="dropdown">
+                                                                   <span class="dropdown-toggle"
+                                                                         data-bs-toggle="dropdown"
+                                                                         aria-haspopup="true" aria-expanded="false"
+                                                                         role="button">
+                                                                   <i class="ri-more-fill"></i>
+                                                                   </span>
+                                                                    <div class="dropdown-menu m-0 p-0">
+                                                                        <a class="dropdown-item p-3"
+                                                                           href="{{ url_for('posts.post', post_id=post.id) }}">
+                                                                            <div class="d-flex align-items-top">
+                                                                                <i class="fa fa-eye h4"></i>
+                                                                                <div class="data ms-2">
+                                                                                    <h6>Check the post</h6>
+                                                                                    <p class="mb-0">Maybe you will like
+                                                                                        it!</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <p>{{ post.content }}</p>
+                                            </div>
+                                            <div class="user-post">
+                                                {% if post.image %}
+                                                <img src="{{ url_for('static', filename='images/post_images/' + post.image) }}"
+                                                     alt="post-image"
+                                                     class="img-fluid w-100"/>
+                                                {% endif %}
+                                            </div>
+                                            {% include 'includes/likes.html' %}
+                                            <hr>
+                                        </div>
+                                        {% else %}
+                                        <h2>No posts.</h2>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        {% if posts.pages > 1 %}
+                        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2)
+                        %}
+                        {% if page_num %}
+                        {% if posts.page == page_num %}
+                        <a class="btn btn-info mb-4 mx-1"
+                           href="{{ url_for('users.profile', full_name=user.full_name, page=page_num) }}">{{
+                            page_num }}</a>
+                        {% else %}
+                        <a class="btn btn-outline-info mb-4 mx-1"
+                           href="{{ url_for('users.profile', full_name=user.full_name, page=page_num) }}">{{
+                            page_num }}</a>
+                        {% endif %}
+                        {% else %}
+                        ...
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="friends" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2>Friends</h2>
+                            <div class="friend-list-tab mt-2">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="all-friends" role="tabpanel">
+                                        <div class="card-body p-0">
+                                            <div class="row">
+                                                {% for friend in friends %}
+
+                                                <div class="col-md-6 col-lg-6 mb-3">
+                                                    <div class="iq-friendlist-block">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="d-flex align-items-center">
+                                                                <a href="{{ url_for('users.profile', full_name=friend.full_name) }}">
+                                                                    <img src="{{ url_for('static', filename='images/profile_images/' + friend.profile_image) }}"
+                                                                         alt="profile-img" class="img-fluid"
+                                                                         style="width: 150px; height: 150px;">
+                                                                </a>
+                                                                <div class="friend-info ms-3">
+                                                                    <h5>{{ friend.full_name }}</h5>
+                                                                    <p class="mb-0">{{ friend.friends.all()|length }}
+                                                                        {% if friend.friends.all()|length < 2 %}
+                                                                        friend
+                                                                        {% else %}
+                                                                        friends
+                                                                        {% endif %}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            {% if user == current_user %}
+                                                            <div class="card-header-toolbar d-flex align-items-center">
+                                                                <div class="dropdown">
+                                                   <span class="dropdown-toggle btn btn-secondary me-2"
+                                                         id="dropdownMenuButton01" data-bs-toggle="dropdown"
+                                                         aria-expanded="true" role="button">
+                                                   <i class="ri-check-line me-1 text-white"></i> Friend
+                                                   </span>
+                                                                    <div class="dropdown-menu dropdown-menu-right"
+                                                                         aria-labelledby="dropdownMenuButton01">
+                                                                        <form action="{{ url_for('users.remove_friend', user_id=friend.id) }}"
+                                                                              method="POST">
+                                                                            <button type="submit"
+                                                                                    class="btn btn-danger w-100">
+                                                                                Unfriend
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% else %}
+                                                <h4>No Friends.</h4>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h2>People you may know!</h2>
+                            <div class="friend-list-tab mt-2">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" role="tabpanel">
+                                        <div class="card-body p-0">
+                                            <div class="row">
+                                                {% for user in random_users %}
+                                                <div class="col-md-6 col-lg-6 mb-3">
+                                                    <div class="iq-friendlist-block">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="d-flex align-items-center">
+                                                                <a href="{{ url_for('users.profile', full_name=user.full_name) }}">
+                                                                    <img src="{{ url_for('static', filename='images/profile_images/' + user.profile_image) }}"
+                                                                         alt="profile-img" class="img-fluid"
+                                                                         style="width: 150px; height: 150px;">
+                                                                </a>
+                                                                <div class="friend-info ms-3">
+                                                                    <h5>{{ user.full_name }}</h5>
+                                                                    <p class="mb-0">{{ user.friends.all()|length }}
+                                                                        {% if user.friends.all()|length < 2 %}
+                                                                        friend
+                                                                        {% else %}
+                                                                        friends
+                                                                        {% endif %}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header-toolbar d-flex align-items-center">
+                                                                <div class="dropdown">
+                                                                   <span class="dropdown-toggle btn btn-secondary me-2"
+                                                                         id="dropdownMenuButton02"
+                                                                         data-bs-toggle="dropdown"
+                                                                         aria-expanded="true" role="button">
+                                                                       <i class="ri-check-line me-1 text-white"></i>
+                                                                       Friend
+                                                                   </span>
+                                                                    <div class="dropdown-menu dropdown-menu-right"
+                                                                         aria-labelledby="dropdownMenuButton02">
+                                                                        <form action="{{ url_for('users.add_friend', user_id=user.id) }}"
+                                                                              method="post">
+                                                                            <button type="submit"
+                                                                                    class="btn btn-primary w-100">Add
+                                                                                Friend
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% else %}
+                                                <h4>No people to recommend!</h4>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

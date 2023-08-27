@@ -1,0 +1,24 @@
+<div class="iq-sidebar  sidebar-default ">
+    <div id="sidebar-scrollbar">
+        <nav class="iq-sidebar-menu">
+            <ul id="iq-sidebar-toggle" class="iq-menu">
+                <li class="{{ 'active' if request.endpoint == 'main.index' else '' }}">
+                    <a href="{{ url_for('main.index') }}" class=" ">
+                        <i class="las la-newspaper"></i><span>Newsfeed</span>
+                    </a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'users.profile' and user == current_user else '' }}">
+                    <a href="{{ url_for('users.profile') }}" class=" ">
+                        <i class="las la-user"></i><span>Profile</span>
+                    </a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'chat' else '' }}">
+                    <a href="#" class=" ">
+                        <i class="las la-comments"></i><span>Chat</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="p-5"></div>
+    </div>
+</div>

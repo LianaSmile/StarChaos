@@ -1,0 +1,30 @@
+<div class="comment-area mt-3 d-flex align-items-center">
+    {% if current_user.has_liked_post(post) %}
+    <a href="{{ url_for('likes.like_action', post_id=post.id, action='unlike') }}">
+        <img src="{{ url_for('static', filename='images/icon/01.png') }}"
+             class="img-fluid like-pic"
+             alt="" style="cursor: pointer;"></a>
+    {% else %}
+    <a href="{{ url_for('likes.like_action', post_id=post.id, action='like') }}">
+        <img src="{{ url_for('static', filename='images/icon/01.png') }}"
+             class="img-fluid grayscale-image"
+             alt="" style="cursor: pointer;">
+    </a>
+    {% endif %}
+    <span class="mx-1">
+        {{ post.likes | length }}
+        {% if post.likes | length < 2 %}
+            Like
+        {% else %}
+            Likes
+        {% endif %}
+    </span>
+    <span class="mx-3">
+        {{ post.comments | length }}
+        {% if post.comments | length < 2 %}
+            Comment
+        {% else %}
+            Comments
+        {% endif %}
+    </span>
+</div>

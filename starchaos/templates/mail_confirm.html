@@ -1,0 +1,15 @@
+{% extends 'auth_base.html' %}
+
+{% block content %}
+<div class="col-md-6 bg-white pt-5 pt-5 pb-lg-0 pb-5">
+    <div class="sign-in-from">
+        <img src="../assets/images/login/mail.png" width="80" alt="">
+        <h1 class="mt-3 mb-0">Success !</h1>
+        <p>A email has been sent to {{ email }}. Please check for an email from company and click on the
+            included link to reset your password.</p>
+        <div class="d-inline-block w-100">
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

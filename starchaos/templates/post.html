@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 row m-0 p-0">
+            <div class="col-sm-8 mx-auto">
+                <div class="card card-block card-stretch card-height">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="user-post-data">
+                                <div class="d-flex justify-content-between">
+                                    <div class="me-3">
+                                        <img class="rounded-circle img-fluid"
+                                             src="{{ url_for('static', filename='images/profile_images/' + post.author.profile_image) }}"
+                                             alt="" style="max-width: unset; height: 50px; width: 50px;">
+                                    </div>
+                                    <div class="w-100">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="">
+                                                <a href="{{ url_for('users.profile', full_name=post.author.full_name) }}">
+                                                    <h5 class="mb-0 d-inline-block">{{ post.author.full_name }}</h5>
+                                                    <p class="mb-0 text-gray">{{ post.date_posted.strftime('%Y-%m-%d')
+                                                        }}</p>
+                                                </a>
+                                            </div>
+                                            {% if post.author == current_user %}
+                                            <div class="card-post-toolbar">
+                                                <div class="dropdown">
+                                                   <span class="dropdown-toggle" data-bs-toggle="dropdown"
+                                                         aria-haspopup="true" aria-expanded="false" role="button">
+                                                   <i class="ri-more-fill"></i>
+                                                   </span>
+                                                    <div class="dropdown-menu m-0 p-0">
+                                                        <a class="dropdown-item p-3"
+                                                           href="{{ url_for('posts.update_post', post_id=post.id) }}">
+                                                            <div class="d-flex align-items-top">
+                                                                <i class="ri-pencil-line h4"></i>
+                                                                <div class="data ms-2">
+                                                                    <h6>Edit Post</h6>
+                                                                    <p class="mb-0">Update your post and saved items</p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <button class="dropdown-item p-3" data-bs-toggle="modal"
+                                                                data-bs-target="#deleteModal">
+                                                            <div class="d-flex align-items-top">
+                                                                <i class="ri-delete-bin-7-line h4"></i>
+                                                                <div class="data ms-2">
+                                                                    <h6>Delete</h6>
+                                                                    <p class="mb-0">Delete Post</p>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <p>{{ post.content }}</p>
+                            </div>
+                            <div class="user-post">
+                                {% if post.image %}
+                                <img src="{{ url_for('static', filename='images/post_images/' + post.image) }}"
+                                     alt="post-image"
+                                     class="img-fluid w-100"/>
+                                {% endif %}
+                            </div>
+                            <div class="comment-area mt-3">
+                                {% include 'includes/likes.html' %}
+                                <hr>
+                                <ul class="post-comments list-inline p-0 m-0" id="comments-list">
+                                    {% for comment in comments %}
+                                    <li class="mb-2 comment">
+                                        <div class="d-flex">
+                                            <div class="user-img">
+                                                <a href="{{ url_for('users.profile', full_name=comment.user.full_name) }}">
+                                                <img src="{{ url_for('static', filename='images/profile_images/' + comment.user.profile_image) }}"
+                                                     alt="userimg"
+                                                     class="avatar-35 rounded-circle">
+                                                </a>
+                                            </div>
+                                            <div class="comment-data-block ms-3 col-sm-9 col-lg-10">
+                                                <a href="{{ url_for('users.profile', full_name=comment.user.full_name) }}">
+                                                    <h6>{{ comment.user.full_name }}</h6>
+                                                </a>
+                                                <p class="mb-0">{{ comment.content }}</p>
+                                                <div class="d-flex flex-wrap align-items-center comment-activity">
+                                                    <i class="text-muted small">{{
+                                                        comment.date_posted.strftime('%Y-%m-%d') }}</i>
+                                                </div>
+                                            </div>
+                                            {% if comment.user == current_user %}
+                                            <div class="card-post-toolbar">
+                                                <div class="dropdown">
+                                                   <span class="dropdown-toggle" data-bs-toggle="dropdown"
+                                                         aria-haspopup="true" aria-expanded="false" role="button">
+                                                   <i class="ri-more-fill"></i>
+                                                   </span>
+                                                    <div class="dropdown-menu m-0 p-0">
+                                                        <button class="dropdown-item p-3 delete-comment-btn"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#deleteModalComment-{{ comment.id }}"
+                                                                data-comment-id="{{ comment.id }}">
+                                                            <div class="d-flex align-items-top">
+                                                                <i class="ri-delete-bin-7-line h4"></i>
+                                                                <div class="data ms-2">
+                                                                    <h6>Delete</h6>
+                                                                    <p class="mb-0">Delete Comment</p>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal fade" id="deleteModalComment-{{ comment.id }}"
+                                                         tabindex="-1"
+                                                         role="dialog" aria-labelledby="deleteModalCommentLabel"
+                                                         aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title"
+                                                                        id="deleteModalCommentLabel">Delete Comment</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal" aria-label="Close">
+
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Sure want to delete this comment?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                            data-bs-dismiss="modal">Close
+                                                                    </button>
+                                                                    <form action="{{ url_for('comments.delete_comment', comment_id=comment.id) }}"
+                                                                          method="POST">
+                                                                        <input class="btn btn-danger" type="submit"
+                                                                               value="Delete">
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="text-center">
+                                    <button id="load-more-btn" class="btn btn-primary">Load More Comments</button>
+                                </div>
+                                <form class="d-flex align-items-center mt-3"
+                                      action="{{ url_for('posts.post', post_id=post.id) }}" method="POST">
+                                    <textarea class="form-control rounded"
+                                              placeholder="Enter Your Comment" name="comment_content"></textarea>
+                                    <button type="submit" class="btn btn-primary d-block ms-2">Post</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                </button>
+            </div>
+            <div class="modal-body">
+                Sure want to delete the post?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var loadMoreButton = document.getElementById('load-more-btn');
+    var comments = document.getElementsByClassName('comment');
+    var currentIndex = 4;
+    var size = currentIndex;
+    if(comments.length <= size){
+        loadMoreButton.style.display = 'none';
+    }
+     for (var i = currentIndex; i < comments.length; i++) {
+         comments[i].style.display = 'none';
+     }
+
+    loadMoreButton.addEventListener('click', function() {
+        var endIndex = currentIndex + size;
+
+        for (var i = currentIndex; i < endIndex && i < comments.length; i++) {
+            comments[i].style.display = 'block';
+        }
+        currentIndex = endIndex;
+        if (currentIndex >= comments.length) {
+            loadMoreButton.style.display = 'none';
+        }
+    });
+});
+</script>
+
+
+{% endblock %}

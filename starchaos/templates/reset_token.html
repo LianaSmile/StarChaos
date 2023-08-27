@@ -1,0 +1,19 @@
+{% extends 'auth_base.html' %}
+{% from 'macro/_renderfield.html' import renderfield %}
+
+{% block content %}
+<div class="col-md-6 bg-white pt-5 pt-5 pb-lg-0 pb-5">
+    <div class="sign-in-from">
+        <h1 class="mb-0">Reset Password</h1>
+        <p>Enter your email address and we'll send you an email with instructions to reset your password.</p>
+        <form class="mt-4" method="POST">
+            {{ form.hidden_tag()  }}
+            {{ renderfield(form.password) }}
+            {{ renderfield(form.confirm_password) }}
+            <div class="d-inline-block w-100">
+                {{ form.submit(class="btn btn-primary float-right") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

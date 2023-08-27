@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+{% include 'includes/head.html' %}
+<body>
+<!-- loader Start -->
+{% include 'includes/loading.html' %}
+<!-- loader END -->
+<!-- Wrapper Start -->
+
+<div class="wrapper">
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/navbar.html' %}
+    <div id="content-page" class="content-page">
+        {% include 'includes/flashes.html' %}
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+<!-- Wrapper End-->
+{% include 'includes/footer.html' %}
+<!-- Backend Bundle JavaScript -->
+{% include 'includes/scripts.html' %}
+</body>
+</html>

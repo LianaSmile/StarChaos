@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% from 'macro/_renderfield.html' import renderfield %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="iq-edit-list">
+                        <ul class="iq-edit-profile d-flex justify-content-around row nav nav-pills">
+                            <li class="col-md-3 p-0">
+                                <a class="nav-link {% if _pass %}active{% endif %}" data-bs-toggle="pill" href="#personal-information">
+                                    Personal Information
+                                </a>
+                            </li>
+                            <li class="col-md-3 p-0">
+                                <a class="nav-link {% if not _pass %}active{% endif %}" data-bs-toggle="pill" href="#chang-pwd">
+                                    Change Password
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="iq-edit-list-data">
+                <div class="tab-content">
+                    <div class="tab-pane {% if not _pass %}fade{% endif %} {% if _pass %}active{% endif %} show" id="personal-information" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Personal Information</h4>
+                                </div>
+                            </div>
+                            <div class="card-body col-sm-6 mx-auto">
+                                <form method="POST" enctype="multipart/form-data">
+                                    {{ form.hidden_tag() }}
+                                    <div class="d-flex justify-content-between flex-wrap">
+                                        <div class="form-group row align-items-center">
+                                            <div class="col-md-12">
+                                                <div class="profile-img-edit">
+                                                    <img class="profile-pic profile-pic-pic"
+                                                         src="{{ url_for('static', filename='images/profile_images/' + current_user.profile_image) }}"
+                                                         alt="profile-pic">
+                                                    <div class="p-image">
+                                                        <i class="ri-pencil-line upload-button upload-button-pic text-white"></i>
+                                                        {{ form.picture(class="file-upload file-upload-pic") }}
+                                                    </div>
+                                                </div>
+                                                <div>Profile Photo</div>
+                                            </div>
+                                            {% if form.picture.errors %}
+                                            {% for error in form.picture.errors %}
+                                            <span class="text-danger">{{ error }}</span><br>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row align-items-center">
+                                            <div class="col-md-12">
+                                                <div class="profile-img-edit">
+                                                    <img class="profile-pic profile-pic-bg"
+                                                         src="{{ url_for('static', filename='images/profile_images/' + current_user.bg_image) }}"
+                                                         alt="profile-pic">
+                                                    <div class="p-image">
+                                                        <i class="ri-pencil-line upload-button upload-button-bg text-white"></i>
+                                                        {{ form.bg_picture(class="file-upload file-upload-bg") }}
+                                                    </div>
+                                                </div>
+                                                <div>Cover Photo</div>
+                                            </div>
+                                            {% if form.bg_picture.errors %}
+                                            {% for error in form.bg_picture.errors %}
+                                            <span class="text-danger">{{ error }}</span><br>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class=" row align-items-center">
+                                        {{ renderfield(form.full_name) }}
+                                        {{ renderfield(form.email) }}
+                                    </div>
+                                    {{ form.submit(class="btn btn-primary me-2") }}
+                                    <button type="reset" class="btn bg-soft-danger">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane {% if _pass %}fade{% endif %} {% if not _pass %}active{% endif %}" id="chang-pwd" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="iq-header-title">
+                                    <h4 class="card-title">Change Password</h4>
+                                </div>
+                            </div>
+                            <div class="card-body col-sm-6 mx-auto">
+                                <form method="POST">
+                                    {{ password_form.hidden_tag() }}
+                                    {{ renderfield(password_form.current_password) }}
+                                    {{ renderfield(password_form.new_password) }}
+                                    {{ renderfield(password_form.confirm_password) }}
+                                    {{ password_form.submit(class="btn btn-primary me-2") }}
+                                    <button type="reset" class="btn bg-soft-danger">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% from 'macro/_renderfield.html' import renderfield %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="timeline" role="tabpanel">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-sm-12 mx-auto">
+                                <div id="post-modal-data" class="card card-block card-stretch card-height">
+                                    <div class="card-header d-flex justify-content-between">
+                                        <div class="header-title">
+                                            <h4 class="card-title">Update Post</h4>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <form class="post-text ms-3 w-100" method="POST" enctype="multipart/form-data">
+                                            {{ form.hidden_tag() }}
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-img">
+                                                    <img src="{{ url_for('static', filename='images/profile_images/' + current_user.profile_image) }}"
+                                                         alt="userimg"
+                                                         class="avatar-60 rounded-circle">
+                                                </div>
+                                                <div class="col-sm-10">
+                                                    {{
+                                                    renderfield(form.content,
+                                                    class="form-control form-control-lg rounded",
+                                                    style="border:none; resize: none")
+                                                    }}
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <ul class=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap">
+                                                <li class="me-3 mb-md-0 mb-2">
+                                                    <span id="upload" class="btn btn-soft-primary upload-button-pic">
+                                                        {% if post.image %}
+                                                    <img src="{{ url_for('static', filename='images/post_images/' + post.image) }}"
+                                                         alt="icon" class="img-fluid me-2 profile-pic-pic"
+                                                         width="24" height="24">
+                                                    {% else %}
+                                                    <img src="{{ url_for('static', filename='images/small/07.png') }}"
+                                                         alt="icon" class="img-fluid me-2 profile-pic-pic"
+                                                         width="24" height="24">
+                                                    {% endif %}
+                                                        Photo/Video
+                                                    </span>
+                                                    {{ form.picture(class="file-upload file-upload-pic") }}
+                                                    {% if form.picture.errors %}
+                                                    {% for error in form.picture.errors %}
+                                                    <span class="text-danger">{{ error }}</span><br>
+                                                    {% endfor %}
+                                                    {% endif %}
+                                                </li>
+                                                <li>
+                                                    {{ form.submit(class="btn btn-primary d-block w-100") }}
+                                                </li>
+                                            </ul>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

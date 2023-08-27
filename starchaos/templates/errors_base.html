@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+{% include 'includes/head.html' %}
+<body>
+<div class="wrapper">
+    <div class="container p-0">
+        <div class="row no-gutters height-self-center">
+            <div class="col-sm-12 text-center align-self-center">
+                <div class="iq-error position-relative mt-5">
+                    <img src="{{ url_for('static', filename='images/error/02.png') }}" class="img-fluid iq-error-img" alt="">
+                    {% block content %}
+                    {% endblock %}
+                    <a class="btn btn-primary mt-3" href="{{ url_for('main.index') }}"><i class="ri-home-4-line"></i>Back
+                        to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Backend Bundle JavaScript -->
+{% include 'includes/scripts.html' %}
+</body>
+</html>
