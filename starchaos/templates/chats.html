@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body chat-page p-0">
+                    <div class="chat-data-block">
+                        <div class="row">
+                            <div class="col-lg-12 chat-data-right scroller">
+                                <div class="chat-search pt-3 ps-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="chat-profile me-3">
+                                            <img src="{{ url_for('static', filename='images/profile_images/' + current_user.profile_image) }}" alt="chat-user" class="avatar-60 ">
+                                        </div>
+                                        <div class="chat-caption">
+                                            <h5 class="mb-0">{{ current_user.full_name }}</h5>
+                                        </div>
+                                        <button type="submit" class="close-btn-res p-3"><i class="ri-close-fill"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chat-sidebar-channel scroller mt-4 ps-3">
+                                    <h5 class="mt-3">Direct Messages</h5>
+                                    <ul class="iq-chat-ui nav flex-column nav-pills">
+                                        <li>
+                                            <a href="{{ url_for('users.chat') }}">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar me-2">
+                                                        <img src="../assets/images/user/07.jpg" alt="chatuserimage"
+                                                             class="avatar-50 ">
+                                                    </div>
+                                                    <div class="chat-sidebar-name">
+                                                        <h6 class="mb-0">Designer</h6>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

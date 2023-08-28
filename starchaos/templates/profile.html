@@ -25,17 +25,17 @@
                         </div>
                         <div class="profile-info p-3 d-flex align-items-center justify-content-end position-relative">
                             <div class="social-info">
-                                <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
-                                    <li class="text-center ps-3">
+                                <ul class="social-data-block d-flex flex-wrap align-items-center justify-content-between list-inline p-0 m-0">
+                                    <li class="text-center p-2">
                                         <h6>Posts</h6>
                                         <p class="mb-0">{{ user.posts|length }}</p>
                                     </li>
-                                    <li class="text-center ps-3">
+                                    <li class="text-center p-2">
                                         <h6>Friends</h6>
                                         <p class="mb-0">{{ user.friends.all()|length }}</p>
                                     </li>
                                     {% if current_user != user %}
-                                    <li class="text-center ps-3">
+                                    <li class="text-center p-2">
                                         {% if current_user.is_friend(user) %}
                                         <form action="{{ url_for('users.remove_friend', user_id=user.id) }}"
                                               method="POST">
@@ -46,6 +46,11 @@
                                             <button type="submit" class="btn btn-primary">Add Friend</button>
                                         </form>
                                         {% endif %}
+                                    </li>
+                                    <li class="text-center p-2">
+                                        <a href="{{ url_for('users.chat') }}">
+                                            <button class="btn btn-success">Message</button>
+                                        </a>
                                     </li>
                                     {% endif %}
                                 </ul>

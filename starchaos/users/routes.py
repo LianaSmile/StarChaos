@@ -168,3 +168,15 @@ def remove_friend(user_id):
         current_user.remove_friend(user)
         flash(f"You are no longer friends with {user.full_name}.", "info")
     return redirect(request.referrer)
+
+
+@users.route("/chat", methods=["POST", "GET"])
+@login_required
+def chat():
+    return render_template('chat.html')
+
+
+@users.route("/chats", methods=["POST", "GET"])
+@login_required
+def chats():
+    return render_template('chats.html')
