@@ -9,62 +9,72 @@
                     <div class="chat-data-block">
                         <div class="row">
                             <div class="col-lg-12 chat-data chat-data-right">
-                                    <div class="tab-pane">
-                                        <div class="chat-head">
-                                            <header class="d-flex justify-content-between align-items-center bg-white pt-3 ps-3 pe-3 pb-3">
+                                <div class="tab-pane">
+                                    <div class="chat-head">
+                                        <header class="d-flex justify-content-between align-items-center bg-white pt-3 ps-3 pe-3 pb-3">
+                                            <a href="{{ url_for('users.profile', full_name=receiver.full_name) }}">
                                                 <div class="d-flex align-items-center">
+
                                                     <div class="avatar chat-user-profile m-0 me-3">
-                                                        <img src="../assets/images/user/10.jpg" alt="avatar"
+                                                        <img src="{{ url_for('static', filename='images/profile_images/' + receiver.profile_image) }}"
+                                                             alt="avatar"
                                                              class="avatar-50 ">
                                                     </div>
-                                                    <h5 class="mb-0">Paul Molive</h5>
+                                                    <h5 class="mb-0">{{ receiver.full_name }}</h5>
+                                                    <input type="hidden" value="{{ current_user.id }}" id="sender">
+                                                    <input type="hidden" value="{{ receiver.id }}" id="receiver">
                                                 </div>
-                                            </header>
-                                        </div>
-                                        <hr>
-                                        <div class="chat-content scroller">
-                                            <div class="chat d-flex other-user">
-                                                <div class="chat-user">
-                                                    <a class="avatar m-0">
-                                                        <img src="../assets/images/user/1.jpg" alt="avatar"
-                                                             class="avatar-35 ">
-                                                    </a>
-                                                    <span class="chat-time mt-1">6:45</span>
-                                                </div>
-                                                <div class="chat-detail">
-                                                    <div class="chat-message">
-                                                        <p>How can we help? We're here for you! 😄</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="chat chat-left">
-                                                <div class="chat-user">
-                                                    <a class="avatar m-0">
-                                                        <img src="../assets/images/user/10.jpg" alt="avatar"
-                                                             class="avatar-35 ">
-                                                    </a>
-                                                    <span class="chat-time mt-1">6:48</span>
-                                                </div>
-                                                <div class="chat-detail">
-                                                    <div class="chat-message">
-                                                        <p>Hey John, I am looking for the best admin template.</p>
-                                                        <p>Could you please help me to find it out? 🤔</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="chat-footer p-3 bg-white">
-                                            <form class="d-flex align-items-center" action="#">
-                                                <input type="text" class="form-control me-3"
-                                                       placeholder="Type your message">
-                                                <button type="submit"
-                                                        class="btn btn-primary d-flex align-items-center p-2"><i
-                                                        class="far fa-paper-plane" aria-hidden="true"></i><span
-                                                        class="d-none d-lg-block ms-1">Send</span></button>
-                                            </form>
-                                        </div>
+                                            </a>
+                                        </header>
                                     </div>
+                                    <hr>
+                                    <div class="chat-content scroller" id="chat-area">
+                                        {% for message in messages %}
+                                        {% if message.sender_id == current_user.id %}
+                                        <div class="chat d-flex other-user">
+                                            <div class="chat-user">
+                                                <a class="avatar m-0">
+                                                    <img src="{{ url_for('static', filename='images/profile_images/' + current_user.profile_image) }}"
+                                                         alt="avatar"
+                                                         class="avatar-35 ">
+                                                </a>
+                                                <span class="chat-time mt-1">{{ message.date_posted.strftime('%Y-%m-%d %H:%M') }}</span>
+                                            </div>
+                                            <div class="chat-detail">
+                                                <div class="chat-message">
+                                                    <p>{{ message.content }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="chat chat-left">
+                                            <div class="chat-user">
+                                                <a class="avatar m-0">
+                                                    <img src="{{ url_for('static', filename='images/profile_images/' + receiver.profile_image) }}"
+                                                         alt="avatar"
+                                                         class="avatar-35 ">
+                                                </a>
+                                                <span class="chat-time mt-1">{{ message.date_posted.strftime('%Y-%m-%d %H:%M') }}</span>
+                                            </div>
+                                            <div class="chat-detail">
+                                                <div class="chat-message">
+                                                    <p>{{ message.content }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <hr>
+                                    <div class="chat-footer p-3 bg-white d-flex">
+                                        <input type="text" class="form-control me-3"
+                                               placeholder="Type your message" id="message-input">
+                                        <button id="button"
+                                                class="btn btn-primary d-flex align-items-center p-2"><i
+                                                class="far fa-paper-plane" aria-hidden="true"></i><span
+                                                class="d-none d-lg-block ms-1">Send</span></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -73,4 +83,76 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"
+        integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script>
+$(document).ready(function(){
+    var chatArea = document.getElementById('chat-area');
+    chatArea.scrollTop = chatArea.scrollHeight;
+    let senderId = $('#sender').val()
+    let receiverId = $('#receiver').val()
+
+    let socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+       socket.emit('join', { room: senderId });
+    });
+    socket.on('response', function(msg) {
+         let sender_text = `<div class="chat d-flex other-user">
+                        <div class="chat-user">
+                            <a class="avatar m-0">
+                                <img src="{{ url_for('static', filename='images/profile_images/' + current_user.profile_image) }}"
+                                     alt="avatar"
+                                     class="avatar-35 ">
+                            </a>
+                            <span class="chat-time mt-1">${msg.date}</span>
+                        </div>
+                        <div class="chat-detail">
+                            <div class="chat-message">
+                                <p>${msg.content}</p>
+                            </div>
+                        </div>
+                    </div>`
+         let receiver_text = `<div class="chat chat-left">
+                                    <div class="chat-user">
+                                        <a class="avatar m-0">
+                                            <img src="{{ url_for('static', filename='images/profile_images/' + receiver.profile_image) }}"
+                                                 alt="avatar"
+                                                 class="avatar-35 ">
+                                        </a>
+                                        <span class="chat-time mt-1">${msg.date}</span>
+                                    </div>
+                                    <div class="chat-detail">
+                                        <div class="chat-message">
+                                            <p>${msg.content}</p>
+                                        </div>
+                                    </div>
+                                </div>`
+         if(msg.sender_id == senderId){
+            $('#chat-area').append(sender_text);
+         }
+         else{
+            $('#chat-area').append(receiver_text);
+         }
+        chatArea.scrollTop = chatArea.scrollHeight;
+    });
+    $('#button').click(function(event) {
+        var content = $("#message-input").val();
+        if(content.trim().length > 0){
+             socket.emit('private_message', {
+                sender_id: senderId,
+                receiver_id: receiverId,
+                content: content
+            });
+            $("#message-input").val('')
+        }
+        return false;
+    });
+});
+
+
+</script>
+
 {% endblock %}

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -10,10 +12,11 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-friends = db.Table('friends',
-                   db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-                   db.Column('friend_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
-                   )
+friends = db.Table(
+    'friends',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('friend_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+)
 
 
 class User(db.Model, UserMixin):
@@ -78,3 +81,12 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.full_name}', '{self.email})"
+
+
+class Message(db.Model):
+    __tablename__ = 'messages'
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)

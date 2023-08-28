@@ -1,6 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from starchaos import bcrypt, db
+from flask_socketio import emit, join_room
+from sqlalchemy.orm import aliased
+from sqlalchemy.sql import func
+from starchaos import bcrypt, db, socketio
 from starchaos.posts.models import Post
 from starchaos.users.forms import (
     RegistrationForm,
@@ -11,7 +14,7 @@ from starchaos.users.forms import (
     ChangePasswordForm
 )
 from starchaos.posts.forms import PostForm
-from starchaos.users.models import User
+from starchaos.users.models import User, Message
 from starchaos.users.utils import save_image, send_reset_email, get_random_users_not_friends
 
 users = Blueprint('users', __name__)
@@ -170,13 +173,75 @@ def remove_friend(user_id):
     return redirect(request.referrer)
 
 
-@users.route("/chat", methods=["POST", "GET"])
+@users.route("/chat/<int:receiver_id>")
 @login_required
-def chat():
-    return render_template('chat.html')
+def chat(receiver_id):
+    sender = current_user
+    receiver = User.query.get(receiver_id)
+    messages = Message.query.filter(
+        ((Message.sender_id == sender.id) & (Message.receiver_id == receiver_id)) |
+        ((Message.sender_id == receiver_id) & (Message.receiver_id == sender.id))
+    ).all()
+    return render_template('chat.html', sender=sender, receiver=receiver, messages=messages)
 
 
-@users.route("/chats", methods=["POST", "GET"])
+@users.route("/delete_messages/<int:receiver_id>", methods=['POST'])
+@login_required
+def delete_messages(receiver_id):
+    sender_id = current_user.id
+    Message.query.filter(
+        ((Message.sender_id == sender_id) & (Message.receiver_id == receiver_id)) |
+        ((Message.sender_id == receiver_id) & (Message.receiver_id == sender_id))
+    ).delete()
+    db.session.commit()
+    return redirect(url_for('users.chats'))
+
+
+@users.route("/chats")
 @login_required
 def chats():
-    return render_template('chats.html')
+    u = aliased(User)
+    m = aliased(Message)
+
+    subquery = (
+        db.session.query(u.id.label('user_id'), func.max(m.date_posted).label('max_date'))
+        .join(m, (u.id == m.sender_id) | (u.id == m.receiver_id))
+        .filter((m.sender_id == current_user.id) | (m.receiver_id == current_user.id))
+        .filter(u.id != current_user.id)
+        .group_by(u.id)
+        .distinct(u.id)
+        .subquery()
+    )
+
+    users_with_messages = (
+        db.session.query(u)
+        .join(subquery, u.id == subquery.c.user_id)
+        .order_by(subquery.c.max_date.desc())
+        .all()
+    )
+
+    return render_template('chats.html', messaged_users=users_with_messages)
+
+
+@socketio.on('private_message')
+@login_required
+def handle_private_message(data):
+    sender_id = data['sender_id']
+    receiver_id = data['receiver_id']
+    content = data['content']
+
+    message = Message(sender_id=sender_id, receiver_id=receiver_id, content=content)
+    db.session.add(message)
+    db.session.commit()
+
+    emit('response', {'sender_id': sender_id, 'content': content,
+                      'date': message.date_posted.strftime('%Y-%m-%d %H:%M')}, room=sender_id)
+    emit('response', {'sender_id': sender_id, 'content': content,
+                      'date': message.date_posted.strftime('%Y-%m-%d %H:%M')}, room=receiver_id)
+
+
+@socketio.on('join')
+@login_required
+def handle_join(data):
+    room = data['room']
+    join_room(room)

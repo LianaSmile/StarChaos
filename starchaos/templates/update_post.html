@@ -38,15 +38,15 @@
                                                 <li class="me-3 mb-md-0 mb-2">
                                                     <span id="upload" class="btn btn-soft-primary upload-button-pic">
                                                         {% if post.image %}
-                                                    <img src="{{ url_for('static', filename='images/post_images/' + post.image) }}"
-                                                         alt="icon" class="img-fluid me-2 profile-pic-pic"
-                                                         width="24" height="24">
-                                                    {% else %}
-                                                    <img src="{{ url_for('static', filename='images/small/07.png') }}"
-                                                         alt="icon" class="img-fluid me-2 profile-pic-pic"
-                                                         width="24" height="24">
-                                                    {% endif %}
-                                                        Photo/Video
+                                                        <img src="{{ url_for('static', filename='images/post_images/' + post.image) }}"
+                                                             alt="icon" class="img-fluid me-2 profile-pic-pic"
+                                                             width="24" height="24">
+                                                        {% else %}
+                                                        <img src="{{ url_for('static', filename='images/small/07.png') }}"
+                                                             alt="icon" class="img-fluid me-2 profile-pic-pic"
+                                                             width="24" height="24">
+                                                        {% endif %}
+                                                            Photo/Video
                                                     </span>
                                                     {{ form.picture(class="file-upload file-upload-pic") }}
                                                     {% if form.picture.errors %}

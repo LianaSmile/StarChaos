@@ -30,13 +30,13 @@ if ($('.new-music').length > 0) {
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev'
-        },  
+        },
 
         // And if we need scrollbar
         scrollbar: {
-            el: '.swiper-scrollbar'  
+            el: '.swiper-scrollbar'
         }
-    } 
+    }
     let swiper = new Swiper('.new-music',options);
 
     document.addEventListener('ChangeRtl', (e) => {
@@ -44,7 +44,7 @@ if ($('.new-music').length > 0) {
         setTimeout(() => {
             swiper = new Swiper('.new-music',options);
         }, 500);
-    })   
+    })
 }
 if ($('.recent-music').length > 0) {
     const options = {
@@ -78,13 +78,13 @@ if ($('.recent-music').length > 0) {
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev'
-        },  
+        },
 
         // And if we need scrollbar
         scrollbar: {
-            el: '.swiper-scrollbar'  
+            el: '.swiper-scrollbar'
         }
-    } 
+    }
     let swiper = new Swiper('.recent-music',options);
 
     document.addEventListener('ChangeRtl', (e) => {
@@ -92,7 +92,7 @@ if ($('.recent-music').length > 0) {
         setTimeout(() => {
             swiper = new Swiper('.recent-music',options);
         }, 500);
-    })   
+    })
 }
 if ($('.top-music').length > 0) {
     const options = {
@@ -126,13 +126,13 @@ if ($('.top-music').length > 0) {
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev'
-        },  
+        },
 
         // And if we need scrollbar
         scrollbar: {
-            el: '.swiper-scrollbar'  
+            el: '.swiper-scrollbar'
         }
-    } 
+    }
     let swiper = new Swiper('.top-music',options);
 
     document.addEventListener('ChangeRtl', (e) => {
@@ -140,7 +140,7 @@ if ($('.top-music').length > 0) {
         setTimeout(() => {
             swiper = new Swiper('.top-music',options);
         }, 500);
-    })   
+    })
 }
 if ($('.sign-slider').length > 0) {
     const options = {
@@ -157,13 +157,13 @@ if ($('.sign-slider').length > 0) {
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev'
-        },  
+        },
 
         // And if we need scrollbar
         scrollbar: {
-            el: '.swiper-scrollbar'  
+            el: '.swiper-scrollbar'
         }
-    } 
+    }
     let swiper = new Swiper('.sign-slider',options);
 
     document.addEventListener('ChangeRtl', (e) => {
@@ -171,5 +171,5 @@ if ($('.sign-slider').length > 0) {
         setTimeout(() => {
             swiper = new Swiper('.sign-slider',options);
         }, 500);
-    })   
+    })
 }
