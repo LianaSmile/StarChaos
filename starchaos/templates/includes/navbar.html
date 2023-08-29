@@ -20,6 +20,21 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav  ms-auto navbar-list">
                     <li>
+                        {% if current_user.theme == 'dark' %}
+                        <a href="{{ url_for('main.theme', _theme='light') }}"
+                           class="d-flex align-items-center"
+                           title="Change Theme">
+                            <i class="fa fa-sun"></i>
+                        </a>
+                        {% else %}
+                         <a href="{{ url_for('main.theme', _theme='dark') }}"
+                           class="d-flex align-items-center"
+                           title="Change Theme">
+                            <i class="fa fa-moon"></i>
+                        </a>
+                        {% endif %}
+                    </li>
+                     <li>
                         <a href="{{ url_for('users.profile', _anchor='post-modal-data') }}"
                            class="d-flex align-items-center"
                            title="Create Post">

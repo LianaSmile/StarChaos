@@ -1,5 +1,9 @@
 <!doctype html>
+{% if current_user.theme == 'dark' %}
+<html lang="en" class="invert-html">
+{% else %}
 <html lang="en">
+{% endif %}
 {% include 'includes/head.html' %}
 <body>
 <!-- loader Start -->

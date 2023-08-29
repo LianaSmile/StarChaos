@@ -141,11 +141,8 @@ $(document).ready(function(){
     $('#button').click(function(event) {
         var content = $("#message-input").val();
         if(content.trim().length > 0){
-             socket.emit('private_message', {
-                sender_id: senderId,
-                receiver_id: receiverId,
-                content: content
-            });
+
+
             $("#message-input").val('')
         }
         return false;

@@ -34,6 +34,7 @@ class User(db.Model, UserMixin):
                               primaryjoin=(friends.c.user_id == id),
                               secondaryjoin=(friends.c.friend_id == id),
                               backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    theme = db.Column(db.String(10), default='light')
 
     def like_post(self, post):
         if not self.has_liked_post(post):
