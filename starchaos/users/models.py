@@ -25,8 +25,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     full_name = db.Column(db.String(40), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    profile_image = db.Column(db.String(20), nullable=False, default='default_profile.png')
-    bg_image = db.Column(db.String(20), nullable=False, default='default_bg_profile.jpg')
+    profile_image = db.Column(db.String(255), nullable=False, default='default_profile.png')
+    bg_image = db.Column(db.String(255), nullable=False, default='default_bg_profile.jpg')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True,
                             cascade='all, delete-orphan')

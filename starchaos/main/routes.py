@@ -24,4 +24,4 @@ def theme(_theme):
     if _theme == 'dark':
         current_user.theme = _theme
         db.session.commit()
-    return redirect(url_for('main.index'))
+    return redirect(request.referrer)
