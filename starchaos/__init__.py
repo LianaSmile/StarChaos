@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from starchaos.config import Config
 from flask_socketio import SocketIO
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -14,6 +15,7 @@ login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
 
 mail = Mail()
+migrate = Migrate()
 
 
 def create_app(config_class=Config):
@@ -25,6 +27,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     mail.init_app(app)
     socketio.init_app(app)
+    migrate.init_app(app, db)
 
     from starchaos.users.routes import users
     from starchaos.posts.routes import posts

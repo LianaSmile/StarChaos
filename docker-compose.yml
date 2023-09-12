@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: starchaos
+    ports:
+      - "5432:5432"
+  flaskapp:
+    build:
+      context: .
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    volumes:
+      - app-data:/app/app_data
+    env_file:
+      - ./starchaos/.env
+
+volumes:
+  db-data:
+  app-data:
