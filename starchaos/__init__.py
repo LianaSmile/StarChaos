@@ -6,8 +6,6 @@ from flask_mail import Mail
 from starchaos.config import Config
 from flask_socketio import SocketIO
 from flask_migrate import Migrate
-from flask_cors import CORS
-
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -18,7 +16,6 @@ login_manager.login_message_category = 'info'
 
 mail = Mail()
 migrate = Migrate()
-cors = CORS()
 
 
 def create_app(config_class=Config):
@@ -29,9 +26,8 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
-    socketio.init_app(app)
+    socketio.init_app(app, cors_allowed_origins="*")
     migrate.init_app(app, db)
-    cors.init_app(app)
 
     from starchaos.users.routes import users
     from starchaos.posts.routes import posts
