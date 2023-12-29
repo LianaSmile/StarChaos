@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-git clone git@github.com:LianaSmile/StarChaos.git
+git clone https://github.com/lianakalpakchyan/StarChaos.git
 cd StarChaos
 docker compose build
 docker compose up
